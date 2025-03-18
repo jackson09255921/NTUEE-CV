@@ -12,8 +12,8 @@ def plot_keypoints(img_gray, keypoints, save_path):
 
 def main():
     parser = argparse.ArgumentParser(description='main function of Difference of Gaussian')
-    parser.add_argument('--threshold', default=5.0, type=float, help='threshold value for feature selection')
-    parser.add_argument('--image_path', default='./testdata/1.png', help='path to input image')
+    parser.add_argument('--threshold', default=3.0, type=float, help='threshold value for feature selection')
+    parser.add_argument('--image_path', default='./testdata/2.png', help='path to input image')
     args = parser.parse_args()
 
     print('Processing %s ...'%args.image_path)
@@ -24,7 +24,8 @@ def main():
     DoG = Difference_of_Gaussian(args.threshold)
     keypoints = DoG.get_keypoints(img)
 
-    plot_keypoints(img, keypoints, save_path='./output')
+
+    plot_keypoints(img, keypoints, save_path='./image/2_3.png')
 
 
 if __name__ == '__main__':

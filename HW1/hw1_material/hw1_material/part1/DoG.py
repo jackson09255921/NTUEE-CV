@@ -14,16 +14,18 @@ class Difference_of_Gaussian(object):
         # Step 1: Filter images with different sigma values (5 images per octave, 2 octave in total)
         # - Function: cv2.GaussianBlur (kernel = (0, 0), sigma = self.sigma**___)
         gaussian_images = []
+        image_copy = image.copy()
 
         for octave in range(self.num_octaves):
             octave_images = []
-            for i in range(0, self.num_guassian_images_per_octave):
-                blurred = cv2.GaussianBlur(image, ksize=(0,0), sigmaX=self.sigma ** (i + 1), sigmaY = self.sigma ** (i + 1))
+            octave_images.append(image_copy)
+            for i in range(1, self.num_guassian_images_per_octave):
+                blurred = cv2.GaussianBlur(image_copy, ksize=(0,0), sigmaX=self.sigma ** i, sigmaY = self.sigma ** i)
                 octave_images.append(blurred)
             
             gaussian_images.append(octave_images)
             last_img = octave_images[-1]
-            image = cv2.resize(last_img, (last_img.shape[1] // 2, last_img.shape[0] // 2), interpolation=cv2.INTER_NEAREST)
+            image_copy = cv2.resize(last_img, dsize=None, fx=0.5, fy=0.5, interpolation=cv2.INTER_NEAREST)
 
         # Step 2: Subtract 2 neighbor images to get DoG images (4 images per octave, 2 octave in total)
         # - Function: cv2.subtract(second_image, first_image)
@@ -34,6 +36,14 @@ class Difference_of_Gaussian(object):
             for i in range(self.num_DoG_images_per_octave):
                 subtract = cv2.subtract(gaussian_images[octave][i + 1], gaussian_images[octave][i])
                 dog_images_in_octaves.append(subtract)
+
+                # Normalize and convert to uint8 for correct saving
+                # subtract = cv2.normalize(subtract, None, 0, 255, cv2.NORM_MINMAX)
+                # subtract = np.uint8(subtract)
+
+                # file_name = f"DoG{octave+1}-{i+1}.png"
+                # path = f"./image/{file_name}"
+                # cv2.imwrite(path, subtract)
 
 
             dog_images.append(dog_images_in_octaves)
