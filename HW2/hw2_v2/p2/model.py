@@ -82,7 +82,7 @@ class MyNet(nn.Module):
 
         # Final classifier
         self.fc1 = nn.Sequential(
-            nn.Linear(1024 * 4 * 4, 1024),
+            nn.Linear(1024 * 2 * 2, 1024),
             nn.BatchNorm1d(1024),
             nn.ReLU(inplace=True),
             nn.Dropout(0.3)
