@@ -15,6 +15,7 @@ from model import MyNet, ResNet18
 from dataset import get_dataloader
 from utils import write_csv
 
+
 def main():
 
     parser = argparse.ArgumentParser()
@@ -55,6 +56,9 @@ def main():
         raise NameError('Unknown model type')
     model.to(device)
 
+
+   
+
     ##### DATALOADER #####
     ##### TODO: check dataset.py #####
     test_loader = get_dataloader(test_datadir, batch_size=1, split='test')
@@ -74,10 +78,13 @@ def main():
         # You don't have to calculate accuracy and loss since you   #
         # don't have labels.                                        #
         #############################################################
-        for i, (images, labels) in enumerate(test_loader):
-            images = images.to(device)
+        for i, batch in enumerate(test_loader):
+            if batch is None:  # 如果整個 batch 是空的
+                print(f"⚠️ Skipping empty batch at index {i}")
+                continue
 
-            # Forward pass
+            images = batch['images'].to(device)
+
             outputs = model(images)
             _, predicted = torch.max(outputs.data, 1)
             predictions.append(predicted.item())

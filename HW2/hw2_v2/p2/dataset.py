@@ -122,10 +122,11 @@ class CIFAR10Dataset(Dataset):
         if self.split != 'test':
             label = self.labels[index]
             label = torch.tensor(label, dtype=torch.long)
-        else:
-            label = None
-            
-        return {
-            'images': image, 
-            'labels': label
-        }
+            return {
+                'images': image, 
+                'labels': label
+            }
+        else:        
+            return {
+                'images': image, 
+            }
